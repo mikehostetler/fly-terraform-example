@@ -1,0 +1,38 @@
+# fly.toml file generated for autosales-sftpgo-prod on 2023-01-26T08:37:32-06:00
+
+app = "my-terraform"
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[experimental]
+auto_rollback = true
+
+[mounts]
+source = "sftpgodata"
+destination = "/srv/sftpgo"
+
+[[services]]
+http_checks = []
+internal_port = 8080
+processes = ["app"]
+protocol = "tcp"
+script_checks = []
+[services.concurrency]
+hard_limit = 25
+soft_limit = 20
+type = "connections"
+
+[[services.ports]]
+force_https = true
+handlers = ["http"]
+port = 80
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443
+
+[[services.tcp_checks]]
+grace_period = "30s"
+interval = "15s"
+restart_limit = 0
+timeout = "2s"
